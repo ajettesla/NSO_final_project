@@ -1,4 +1,0 @@
----
-# tasks file for system
-- name: executing command
-  shell: "cat /etc/hosts | grep '10\\..*' > /tmp/test.txt"
