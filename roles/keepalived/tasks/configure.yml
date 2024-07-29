@@ -1,5 +1,5 @@
 - name: Copy Keepalived configuration for proxy_1
-  copy:
+  template:
     src: keepalived.proxy_1.conf.j2
     dest: /etc/keepalived/keepalived.conf
     mode: '0644'
@@ -9,7 +9,7 @@
   notify: Restart Keepalived Service
 
 - name: Copy Keepalived configuration for proxy_2
-  copy:
+  template:
     src: keepalived.proxy_2.conf.j2
     dest: /etc/keepalived/keepalived.conf
     mode: '0644'
