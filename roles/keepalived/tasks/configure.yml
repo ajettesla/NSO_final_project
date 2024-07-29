@@ -1,7 +1,19 @@
-- name: Copy Keepalived configuration
+- name: Copy Keepalived configuration for proxy_1
   copy:
-    src: keepalived.conf.j2
+    src: keepalived.proxy_1.conf.j2
     dest: /etc/keepalived/keepalived.conf
     mode: '0644'
     owner: root
     group: root
+  when: inventory_hostname == 'proxy_1'
+  notify: Restart Keepalived Service
+
+- name: Copy Keepalived configuration for proxy_2
+  copy:
+    src: keepalived.proxy_2.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    mode: '0644'
+    owner: root
+    group: root
+  when: inventory_hostname == 'proxy_2'
+  notify: Restart Keepalived Service
