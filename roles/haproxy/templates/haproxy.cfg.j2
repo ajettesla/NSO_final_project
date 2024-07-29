@@ -11,6 +11,7 @@ backend allservers
    mode {{ lb.mode }}
 
    
-   server  devA  {{ hostvars['devA'].ansible_default_ipv4.address }}:{{ app.port1 }}
-   server  devB  {{ hostvars['devB'].ansible_default_ipv4.address }}:{{ app.port2 }}
-   server  devC  {{ hostvars['devC'].ansible_default_ipv4.address }}:{{ app.port3 }}
+{% for host in groups['dev'] %}
+server {{ host }} {{ hostvars[host].ansible_default_ipv4.address }}:{{ app.port1 }}
+{% endfor %}
+
