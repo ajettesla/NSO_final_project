@@ -1,0 +1,17 @@
+---
+ - name: application loading
+   hosts: app
+   become: true
+   roles: 
+     - flask
+
+ - name: loadbalancer
+   hosts: lb
+   become: true
+   roles:
+     - haproxy
+
+
+
+
+
