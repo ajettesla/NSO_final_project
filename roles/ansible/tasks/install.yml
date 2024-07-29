@@ -1,0 +1,17 @@
+- name: Install Ansible
+  apt:
+    name: ansible
+    state: present
+
+- name: copy Ansible folder to bastion
+  copy:
+    src: NSO_Ansible_final_project
+    dest: /opt/
+    owner: root
+    group: root
+    mode: 0755
+
+- name: printing bastion ip address
+  debug:
+    msg: "this the ip address check {{ floatingIp.bastion }} proxy ip {{ floatingIp.haproxy }}"
+

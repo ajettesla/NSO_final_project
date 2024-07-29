@@ -1,0 +1,6 @@
+- name: apply roles for bastion
+  hosts: bastion
+  become: true
+  roles:
+  - ansible
+  - python3
