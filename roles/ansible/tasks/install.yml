@@ -41,6 +41,7 @@
     msg:
     - "Bastion IP: {{ floatingIp.bastion }}"
     - "HAProxy IP: {{ floatingIp.haproxy }}"
+    - "Hostname: {{ hostvars[inventory_hostname] }}"
 
 
 
