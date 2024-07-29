@@ -1,0 +1,3 @@
+floatingIp:
+  bastion: 185.52.156.102
+  haproxy: 185.52.156.119

@@ -1,17 +1,25 @@
-- name: Install Ansible
+- name: Install Ansible and required packages
   apt:
-    name: ansible
+    name: "{{ item }}"
     state: present
+  loop:
+  - ansible
+  - zip
+  - unzip
 
-- name: copy Ansible folder to bastion
+- name: Copy Ansible folder to bastion
   copy:
-    src: NSO_Ansible_final_project
+    src: NSO_final_project.zip
     dest: /opt/
     owner: root
     group: root
-    mode: 0755
+    mode: '0755'
 
-- name: printing bastion ip address
+- name: Unzip the archive
+  shell: unzip /opt/NSO_final_project.zip
+
+- name: Print bastion and proxy IP addresses
   debug:
-    msg: "this the ip address check {{ floatingIp.bastion }} proxy ip {{ floatingIp.haproxy }}"
+    msg: "This is the bastion IP address: {{ floatingIp.bastion }} and proxy IP: {{ floatingIp.haproxy }}"
+
 
