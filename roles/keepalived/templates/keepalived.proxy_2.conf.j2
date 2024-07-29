@@ -17,4 +17,7 @@ vrrp_instance VI_1 {
     virtual_ipaddress {
         {{ floatingIp.haproxy }}/32  # Virtual IP address managed by VRRP
     }
+
+    notify_master "/etc/keepalived/notify.sh master"
+    notify_backup "/etc/keepalived/notify.sh backup"
 }

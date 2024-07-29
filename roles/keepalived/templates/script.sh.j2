@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Source the OpenStack credentials
+source /opt/openrcfile
+
+FLOATING_IP={{ floatingIp.haproxy }}  # Replace with your floating IP
+INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+ACTION=$1
+
+if [ "$ACTION" = "master" ]; then
+    openstack server add floating ip $INSTANCE_ID $FLOATING_IP
+elif [ "$ACTION" = "backup" ]; then
+    openstack server remove floating ip $INSTANCE_ID $FLOATING_IP
+fi
