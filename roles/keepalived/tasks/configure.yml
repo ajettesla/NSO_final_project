@@ -21,15 +21,15 @@
 - name: Copy template Keepalived configuration for proxy_2
   template:
     src: scripts.sh.j2
-    dest: /etc/keepalived/scripts.sh
+    dest: /etc/keepalived/script.sh
     mode: '0744'
     owner: root
     group: root
 
 - name: copy file openstack file to proxy server
   copy:
-    src: openrcfile
-    dest: /opt/openrcfile
+    src: openrc_file
+    dest: /opt/openrc_file
     mode: '0644'
     owner: root
     group: root
