@@ -7,16 +7,10 @@ FLOATING_IP={{ floatingIp.haproxy }}  # Replace with your floating IP
 
 INSTANCE_ID=$(hostname -f)
 
-if [ "$INSTANCE_ID" == "proxy_1" ]; then
-    INSTANCE_ID_other="proxy_2"
-else
-    INSTANCE_ID_other="proxy_1"
-fi
-
 ACTION=$1
 
 if [ "$ACTION" == "master" ]; then
     openstack server add floating ip "$INSTANCE_ID" "$FLOATING_IP"
 elif [ "$ACTION" == "backup" ]; then
-    openstack server remove floating ip "$INSTANCE_ID_other" "$FLOATING_IP"
+    openstack server remove floating ip "$INSTANCE_ID" "$FLOATING_IP"
 fi
