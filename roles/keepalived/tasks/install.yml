@@ -3,4 +3,9 @@
     name: keepalived
     state: present
 
+- name: Install openstack
+  apt:
+    name: python3-openstackclient
+    state: present
+
 
