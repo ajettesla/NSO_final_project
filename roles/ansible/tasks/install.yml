@@ -39,7 +39,7 @@
 - name: Print bastion and proxy IP addresses
   debug:
     msg:
-    - "{{ hostvars['Bastion'] }}"
+    - "hallo"
 
 
 
