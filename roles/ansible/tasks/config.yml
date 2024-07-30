@@ -1,1 +1,2 @@
-
+- name: apply ansible configuration
+  shell: ansible-playbook site.yml
