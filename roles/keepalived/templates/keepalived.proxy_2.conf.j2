@@ -18,6 +18,6 @@ vrrp_instance VI_1 {
         {{ floatingIp.haproxy }}/32  # Virtual IP address managed by VRRP
     }
 
-    notify_master "/etc/keepalived/script.sh master"
-    notify_backup "/etc/keepalived/script.sh backup"
+    notify_backup "/etc/keepalived/script.sh master"
+    notify_master "/etc/keepalived/script.sh backup"
 }
