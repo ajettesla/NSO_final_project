@@ -15,16 +15,20 @@ else
     AID="proxy_1"
 fi
 
-# Function to check if the floating IP is assigned to the given instance
-check_ip_assigned() {
-    openstack server show "$ID" -f json | jq -r '.addresses' | grep -q "$FLOATING_IP"
-}
+ip addr show | grep -q $FLOATING_IP
 
-# Check if the floating IP is assigned to the current instance
-if check_ip_assigned "$ID"; then 
-    echo "$(date): Floating IP $FLOATING_IP is already assigned to instance $ID." >> /var/log/keepalived_notify.log
-else
-    echo "$(date): Floating IP $FLOATING_IP is not assigned to instance $ID. Performing reassignment." >> /var/log/keepalived_notify.log
-    openstack server remove floating ip "$AID" "$FLOATING_IP"
-    openstack server add floating ip "$ID" "$FLOATING_IP"
-fi
+if [ $? -eq 0 ]; then
+        # Function to check if the floating IP is assigned to the given instance
+        check_ip_assigned() {
+                openstack server show "$ID" -f json | jq -r '.addresses' | grep -q "$FLOATING_IP"
+        }
+
+        # Check if the floating IP is assigned to the current instance
+        if check_ip_assigned "$ID"; then
+                echo "$(date): Floating IP $FLOATING_IP is already assigned to instance $ID." >> /var/log/keepalived_notify.log
+        else
+                echo "$(date): Floating IP $FLOATING_IP is not assigned to instance $ID. Performing reassignment." >> /var/log/keepalived_notify.log
+                openstack server remove floating ip "$AID" "$FLOATING_IP"
+                openstack server add floating ip "$ID" "$FLOATING_IP"
+        fi
+fi 
