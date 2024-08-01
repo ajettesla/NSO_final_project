@@ -8,6 +8,6 @@
   notify:
     - restart haproxy
 
--name: restart haproxy explicitly
+- name: restart haproxy explicitly
   shell: systemctl restart haproxy
   
