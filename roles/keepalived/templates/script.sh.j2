@@ -4,9 +4,10 @@
 source /opt/openrc_file
 
 # Define the floating IP
-FLOATING_IP={{ floatingIp.haproxy }}  # Ensure this is interpolated correctly
+FLOATING_IP="{{ floatingIp.haproxy }}"  # Ensure this is interpolated correctly
 
-if $(hostname -f) == "proxy-1"; then
+# Determine the hostname and set the IDs
+if [[ "$(hostname -f)" == "proxy-1" ]]; then
     ID="proxy_1"
     AID="proxy_2"
 else
@@ -14,9 +15,11 @@ else
     AID="proxy_1"
 fi
 
-ip addr show | grep -q $FLOATING_IP 
-
-if [ $? -eq 0 ]; then 
-    openstack remove remove floating ip $AID $FLOATING_IP
-    openstack server add floating ip $ID $FLOATING_IP
+# Check if the floating IP is assigned to the current host
+if ip addr show | grep -q "$FLOATING_IP"; then 
+    # Remove the floating IP from the alternate ID
+    openstack server remove floating ip "$AID" "$FLOATING_IP"
+    # Add the floating IP to the current ID
+    openstack server add floating ip "$ID" "$FLOATING_IP"
 fi
+
