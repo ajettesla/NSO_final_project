@@ -7,3 +7,7 @@
     mode: '0644'
   notify:
     - restart haproxy
+
+-name: restart haproxy explicitly
+  shell: systemctl restart haproxy
+  
