@@ -6,89 +6,17 @@ source /opt/openrc_file
 # Define the floating IP
 FLOATING_IP={{ floatingIp.haproxy }}  # Ensure this is interpolated correctly
 
-# Get the action (master or backup)
-ACTION=$1
-
-# Define instance IDs
-MASTER_INSTANCE_ID="proxy_1"
-BACKUP_INSTANCE_ID="proxy_2"
-
-# Function to check if a floating IP is assigned to an instance
-is_floating_ip_assigned() {
-    local instance_id=$1
-    local floating_ip=$2
-    openstack server show "$instance_id" -f value -c addresses | grep -q "$floating_ip"
-}
-
-# Perform actions based on the VRRP state
-if [ "$ACTION" == "master" ]; then
-    echo "Switching to MASTER"
-    
-    # Check if the floating IP is already assigned to the backup instance
-    if is_floating_ip_assigned "$BACKUP_INSTANCE_ID" "$FLOATING_IP"; then
-        # Remove floating IP from the backup instance
-        echo "Removing floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID"
-        openstack server remove floating ip "$BACKUP_INSTANCE_ID" "$FLOATING_IP"
-        if [ $? -eq 0 ]; then
-            echo "Successfully removed floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID"
-        else
-            echo "Failed to remove floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID" >&2
-            exit 1
-        fi
-    else
-        echo "Floating IP $FLOATING_IP is not assigned to $BACKUP_INSTANCE_ID"
-    fi
-
-    # Check if the floating IP is already assigned to the master instance
-    if ! is_floating_ip_assigned "$MASTER_INSTANCE_ID" "$FLOATING_IP"; then
-        # Assign floating IP to the master instance
-        echo "Assigning floating IP $FLOATING_IP to $MASTER_INSTANCE_ID"
-        openstack server add floating ip "$MASTER_INSTANCE_ID" "$FLOATING_IP"
-        if [ $? -eq 0 ]; then
-            echo "Successfully assigned floating IP $FLOATING_IP to $MASTER_INSTANCE_ID"
-        else
-            echo "Failed to assign floating IP $FLOATING_IP to $MASTER_INSTANCE_ID" >&2
-            exit 1
-        fi
-    else
-        echo "Floating IP $FLOATING_IP is already assigned to $MASTER_INSTANCE_ID"
-    fi
-
-elif [ "$ACTION" == "backup" ]; then
-    echo "Switching to BACKUP"
-
-    # Check if the floating IP is already assigned to the master instance
-    if is_floating_ip_assigned "$MASTER_INSTANCE_ID" "$FLOATING_IP"; then
-        # Remove floating IP from the master instance
-        echo "Removing floating IP $FLOATING_IP from $MASTER_INSTANCE_ID"
-        openstack server remove floating ip "$MASTER_INSTANCE_ID" "$FLOATING_IP"
-        if [ $? -eq 0 ]; then
-            echo "Successfully removed floating IP $FLOATING_IP from $MASTER_INSTANCE_ID"
-        else
-            echo "Failed to remove floating IP $FLOATING_IP from $MASTER_INSTANCE_ID" >&2
-            exit 1
-        fi
-    else
-        echo "Floating IP $FLOATING_IP is not assigned to $MASTER_INSTANCE_ID"
-    fi
-
-    # Check if the floating IP is already assigned to the backup instance
-    if ! is_floating_ip_assigned "$BACKUP_INSTANCE_ID" "$FLOATING_IP"; then
-        # Assign floating IP to the backup instance
-        echo "Assigning floating IP $FLOATING_IP to $BACKUP_INSTANCE_ID"
-        openstack server add floating ip "$BACKUP_INSTANCE_ID" "$FLOATING_IP"
-        if [ $? -eq 0 ]; then
-            echo "Successfully assigned floating IP $FLOATING_IP to $BACKUP_INSTANCE_ID"
-        else
-            echo "Failed to assign floating IP $FLOATING_IP to $BACKUP_INSTANCE_ID" >&2
-            exit 1
-        fi
-    else
-        echo "Floating IP $FLOATING_IP is already assigned to $BACKUP_INSTANCE_ID"
-    fi
+if $(hostname -f) == "proxy-1"; then
+    ID="proxy_1"
+    AID="proxy_2"
 else
-    echo "Unknown action $ACTION"
-    exit 1
+    ID="proxy_2"
+    AID="proxy_1"
 fi
 
-exit 0
+ip addr show | grep -q $FLOATING_IP 
+
+if [ $? -eq 0 ]; then 
+    openstack remove remove floating ip $AID $FLOATING_IP
+    openstack server add floating ip $ID $FLOATING_IP
+fi
