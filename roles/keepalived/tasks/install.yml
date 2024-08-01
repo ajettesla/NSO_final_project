@@ -8,4 +8,9 @@
     name: python3-openstackclient
     state: present
 
+- name: Install openstack
+  apt:
+    name: jq
+    state: present
+
 
