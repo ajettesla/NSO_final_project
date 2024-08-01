@@ -17,7 +17,7 @@ fi
 
 # Function to check if the floating IP is assigned to the given instance
 check_ip_assigned() {
-    openstack server show "$1" -f json | jq -r '.addresses' | grep -q "$FLOATING_IP"
+    openstack server show "$ID" -f json | jq -r '.addresses' | grep -q "$FLOATING_IP"
 }
 
 # Check if the floating IP is assigned to the current instance
