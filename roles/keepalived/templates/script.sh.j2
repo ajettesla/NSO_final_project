@@ -16,38 +16,44 @@ BACKUP_INSTANCE_ID="proxy_2"
 # Perform actions based on the VRRP state
 if [ "$ACTION" == "master" ]; then
     echo "Switching to MASTER"
+    
+    # Remove floating IP from the backup instance first
+    openstack server remove floating ip "$BACKUP_INSTANCE_ID" "$FLOATING_IP"
+    if [ $? -eq 0 ]; then
+        echo "Successfully removed floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID"
+    else
+        echo "Failed to remove floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID" >&2
+        exit 1
+    fi
+
     # Assign floating IP to the master instance
     openstack server add floating ip "$MASTER_INSTANCE_ID" "$FLOATING_IP"
     if [ $? -eq 0 ]; then
         echo "Successfully assigned floating IP $FLOATING_IP to $MASTER_INSTANCE_ID"
     else
         echo "Failed to assign floating IP $FLOATING_IP to $MASTER_INSTANCE_ID" >&2
-    fi
-
-    # Remove floating IP from the backup instance
-    openstack server remove floating ip "$BACKUP_INSTANCE_ID" "$FLOATING_IP"
-    if [ $? -eq 0 ]; then
-        echo "Successfully removed floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID"
-    else
-        echo "Failed to remove floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID" >&2
+        exit 1
     fi
 
 elif [ "$ACTION" == "backup" ]; then
     echo "Switching to BACKUP"
+
+    # Remove floating IP from the master instance first
+    openstack server remove floating ip "$MASTER_INSTANCE_ID" "$FLOATING_IP"
+    if [ $? -eq 0 ]; then
+        echo "Successfully removed floating IP $FLOATING_IP from $MASTER_INSTANCE_ID"
+    else
+        echo "Failed to remove floating IP $FLOATING_IP from $MASTER_INSTANCE_ID" >&2
+        exit 1
+    fi
+
     # Assign floating IP to the backup instance
     openstack server add floating ip "$BACKUP_INSTANCE_ID" "$FLOATING_IP"
     if [ $? -eq 0 ]; then
         echo "Successfully assigned floating IP $FLOATING_IP to $BACKUP_INSTANCE_ID"
     else
         echo "Failed to assign floating IP $FLOATING_IP to $BACKUP_INSTANCE_ID" >&2
-    fi
-
-    # Remove floating IP from the master instance
-    openstack server remove floating ip "$MASTER_INSTANCE_ID" "$FLOATING_IP"
-    if [ $? -eq 0 ]; then
-        echo "Successfully removed floating IP $FLOATING_IP from $MASTER_INSTANCE_ID"
-    else
-        echo "Failed to remove floating IP $FLOATING_IP from $MASTER_INSTANCE_ID" >&2
+        exit 1
     fi
 else
     echo "Unknown action $ACTION"
@@ -55,7 +61,3 @@ else
 fi
 
 exit 0
-
-
-
-
