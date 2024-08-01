@@ -21,7 +21,7 @@ if [ "$ACTION" == "master" ]; then
     openstack server remove floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
     openstack server add floating ip "$INSTANCE_ID" "$FLOATING_IP"
 elif [ "$ACTION" == "backup" ]; then
-    openstack server remove floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
-    openstack server add floating ip "$INSTANCE_ID" "$FLOATING_IP"
+    openstack server remove floating ip "$INSTANCE_ID" "$FLOATING_IP"
+    openstack server add floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
 fi
 
