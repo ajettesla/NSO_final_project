@@ -3,7 +3,7 @@
 # Source the OpenStack credentials
 source /opt/openrc_file
 
-FLOATING_IP=185.52.156.55  # Replace with your floating IP
+FLOATING_IP={{ floatingIp.haproxy }}  # Replace with your floating IP
 
 INSTANCE_ID=$(hostname -f)
 
