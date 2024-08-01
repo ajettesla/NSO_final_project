@@ -17,14 +17,10 @@ fi
 
 # Check if the floating IP is assigned to the current host
 if ip addr show | grep -q "$FLOATING_IP"; then 
-    # Remove the floating IP from the alternate ID
     openstack server remove floating ip "$AID" "$FLOATING_IP"
-    # Add the floating IP to the current ID
     openstack server add floating ip "$ID" "$FLOATING_IP"
 else
-    # Remove the floating IP from the alternate ID
     openstack server remove floating ip "$ID" "$FLOATING_IP"
-    # Add the floating IP to the current ID
     openstack server add floating ip "$AID" "$FLOATING_IP"
 fi
 
