@@ -1,1 +1,4 @@
-
+- name: install ngnix
+  apt:
+    name: ngnix
+    state: present
