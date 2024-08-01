@@ -9,29 +9,17 @@ ACTION=$1
 
 INSTANCE_ID=$(hostname -f)
 
-if [ $INSTANCE_ID == "proxy-1" ]; then
-    INSTANCE_ID="proxy_1"
-    ANOTHER_INSTANCE_ID="proxy_2"
-    
-    if [ "$ACTION" == "master" ]; then
+INSTANCE_ID="proxy_2"
+ANOTHER_INSTANCE_ID="proxy_1"
+
+if [ "$ACTION" == "master" ]; then
+	openstack server remove floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
+        openstack server add floating ip "$INSTANCE_ID" "$FLOATING_IP"
+elif [ "$ACTION" == "backup" ]; then
         openstack server remove floating ip "$INSTANCE_ID" "$FLOATING_IP"
         openstack server add floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
-    elif [ "$ACTION" == "backup" ]; then
-        openstack server remove floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
-        openstack server add floating ip "$INSTANCE_ID" "$FLOATING_IP"
-    fi
-else
-    INSTANCE_ID="proxy_2"
-    ANOTHER_INSTANCE_ID="proxy_1"
-    
-    if [ "$ACTION" == "master" ]; then
-        openstack server remove floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
-        openstack server add floating ip "$INSTANCE_ID" "$FLOATING_IP"
-    elif [ "$ACTION" == "backup" ]; then
-        openstack server remove floating ip "$INSTANCE_ID" "$FLOATING_IP"
-        openstack server add floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
-    fi
 fi
+
 
 
 
