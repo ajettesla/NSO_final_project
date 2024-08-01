@@ -3,22 +3,58 @@
 # Source the OpenStack credentials
 source /opt/openrc_file
 
-FLOATING_IP={{ floatingIp.haproxy }}  # Replace with your floating IP
+# Define the floating IP
+FLOATING_IP={{ floatingIp.haproxy }}  # Ensure this is interpolated correctly
 
+# Get the action (master or backup)
 ACTION=$1
 
-INSTANCE_ID=$(hostname -f)
+# Define instance IDs
+MASTER_INSTANCE_ID="proxy_1"
+BACKUP_INSTANCE_ID="proxy_2"
 
-INSTANCE_ID="proxy_2"
-ANOTHER_INSTANCE_ID="proxy_1"
-
+# Perform actions based on the VRRP state
 if [ "$ACTION" == "master" ]; then
-	openstack server remove floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
-        openstack server add floating ip "$INSTANCE_ID" "$FLOATING_IP"
+    echo "Switching to MASTER"
+    # Assign floating IP to the master instance
+    openstack server add floating ip "$MASTER_INSTANCE_ID" "$FLOATING_IP"
+    if [ $? -eq 0 ]; then
+        echo "Successfully assigned floating IP $FLOATING_IP to $MASTER_INSTANCE_ID"
+    else
+        echo "Failed to assign floating IP $FLOATING_IP to $MASTER_INSTANCE_ID" >&2
+    fi
+
+    # Remove floating IP from the backup instance
+    openstack server remove floating ip "$BACKUP_INSTANCE_ID" "$FLOATING_IP"
+    if [ $? -eq 0 ]; then
+        echo "Successfully removed floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID"
+    else
+        echo "Failed to remove floating IP $FLOATING_IP from $BACKUP_INSTANCE_ID" >&2
+    fi
+
 elif [ "$ACTION" == "backup" ]; then
-        openstack server remove floating ip "$INSTANCE_ID" "$FLOATING_IP"
-        openstack server add floating ip "$ANOTHER_INSTANCE_ID" "$FLOATING_IP"
+    echo "Switching to BACKUP"
+    # Assign floating IP to the backup instance
+    openstack server add floating ip "$BACKUP_INSTANCE_ID" "$FLOATING_IP"
+    if [ $? -eq 0 ]; then
+        echo "Successfully assigned floating IP $FLOATING_IP to $BACKUP_INSTANCE_ID"
+    else
+        echo "Failed to assign floating IP $FLOATING_IP to $BACKUP_INSTANCE_ID" >&2
+    fi
+
+    # Remove floating IP from the master instance
+    openstack server remove floating ip "$MASTER_INSTANCE_ID" "$FLOATING_IP"
+    if [ $? -eq 0 ]; then
+        echo "Successfully removed floating IP $FLOATING_IP from $MASTER_INSTANCE_ID"
+    else
+        echo "Failed to remove floating IP $FLOATING_IP from $MASTER_INSTANCE_ID" >&2
+    fi
+else
+    echo "Unknown action $ACTION"
+    exit 1
 fi
+
+exit 0
 
 
 
