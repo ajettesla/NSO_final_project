@@ -4,6 +4,7 @@
    become: true
    roles: 
      - flask
+     - snmpd
 
  - name: loadbalancer
    hosts: proxy
@@ -11,6 +12,7 @@
    roles:
      - haproxy
      - keepalived
+     - nginx
 
 
 
