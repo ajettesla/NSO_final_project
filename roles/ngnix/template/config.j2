@@ -1,1 +1,21 @@
-hallo
+
+
+
+worker_processes auto;
+
+events {
+    worker_connections 1024;
+}
+
+stream {
+    upstream snmp_servers {
+        {% for host in groups['dev'] %}
+        server {{ host }} {{ hostvars[host].ansible_default_ipv4.address }}:161
+        {% endfor %}
+    }
+
+    server {
+        listen 161 udp;
+        proxy_pass snmp_servers;
+    }
+}
