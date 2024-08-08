@@ -15,6 +15,12 @@
      - keepalived
      - ngnix
      - prometheus_node
+     
+- name: self
+  hosts: local
+  become: true
+  roles: 
+   - prometheus_controller
 
 
 
