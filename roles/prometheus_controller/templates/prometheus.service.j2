@@ -5,8 +5,8 @@ After=network.target
 [Service]
 User=root
 ExecStart=/usr/local/bin/prometheus \
---config.file={{ prometheus_config_dir }}/prometheus.yml \
---storage.tsdb.path={{ prometheus_data_dir }}
+--config.file={{ prometheus.config_dir }}/prometheus.yml \
+--storage.tsdb.path={{ prometheus.data_dir }}
 Restart=always
 
 [Install]
