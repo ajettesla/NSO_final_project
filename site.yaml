@@ -5,6 +5,7 @@
    roles: 
      - flask
      - snmpd
+     - prometheus_node
 
  - name: loadbalancer
    hosts: proxy
@@ -13,6 +14,7 @@
      - haproxy
      - keepalived
      - ngnix
+     - prometheus_node
 
 
 
