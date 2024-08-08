@@ -4,6 +4,7 @@
     owner: root
     group: root
     mode: '0755'
+    state: directory
   loop:
   - "{{ prometheus.install_dir }}"
   - "{{ prometheus.data_dir }}"
