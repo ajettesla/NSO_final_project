@@ -4,4 +4,3 @@
   roles:
   - ansible
   - python3
-  - prometheus_controller
