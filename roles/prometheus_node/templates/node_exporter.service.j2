@@ -1,9 +1,11 @@
 [Unit]
 Description=Node Exporter
-After=network.target
+Wants=network-online.target
+After=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/node_exporter-1.8.2.linux-amd64/node_exporter
+ExecStart=/usr/local/bin/node_exporter-1.8.2.linux-amd64/node_exporter --web.listen-address=0.0.0.0:9100
+ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
 
 [Install]
