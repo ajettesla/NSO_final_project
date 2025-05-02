@@ -1,5 +1,5 @@
-export OS_USERNAME=poornateja
-export OS_PASSWORD=Iamatcollage@989
+export OS_USERNAME=xxxxxxxxxxxxxxxxx
+export OS_PASSWORD=xxxxxxxxxxxxxxxxxxxx
 export OS_AUTH_URL=https://fra1.citycloud.com:5000
 export OS_USER_DOMAIN_NAME=CCP_Domain_46102
 export OS_PROJECT_DOMAIN_NAME=CCP_Domain_46102
